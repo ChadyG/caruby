@@ -1,0 +1,26 @@
+require 'rubygems'
+Gem::manage_gems
+require 'rake/gempackagetask'
+
+spec = Gem::Specification.new do |s|
+    s.platform  =   Gem::Platform::RUBY
+    s.name      =   "CellularAutomata"
+    s.version   =   "0.5"
+    s.author    =   "Chad Godsey"
+    s.email     =   "LyleBarbatuous @ gmail.com"
+    s.summary   =   "A package for creating and deploying Cellular Automaton"
+    s.files     =   FileList['lib/*.rb', 'test/*'].to_a
+    s.require_path  =   "lib"
+    s.autorequire   =   "CA"
+    s.test_files = Dir.glob('tests/*.rb')
+    s.has_rdoc  =   true
+    s.extra_rdoc_files  =   ["README"]
+end
+
+Rake::GemPackageTask.new(spec) do |pkg|
+    pkg.need_tar = true
+end
+
+task :default => "pkg/#{spec.name}-#{spec.version}.gem" do
+    puts "generated latest version"
+end
