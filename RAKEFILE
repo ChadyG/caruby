@@ -4,17 +4,15 @@ require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
     s.platform  =   Gem::Platform::RUBY
-    s.name      =   "CellularAutomata"
-    s.version   =   "0.5"
+    s.name      =   "caruby"
+    s.version   =   "1.0.1"
     s.author    =   "Chad Godsey"
-    s.email     =   "LyleBarbatuous @ gmail.com"
+    s.email     =   "LyleBarbatuous@gmail.com"
     s.summary   =   "A package for creating and deploying Cellular Automaton"
     s.files     =   FileList['lib/*.rb', 'test/*'].to_a
-    s.require_path  =   "lib"
-    s.autorequire   =   "CA"
-    s.test_files = Dir.glob('tests/*.rb')
+    s.autorequire = 'lib/caruby.rb'
     s.has_rdoc  =   true
-    s.extra_rdoc_files  =   ["README"]
+    s.extra_rdoc_files  =   ["README", "COPYING"]
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|

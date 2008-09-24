@@ -1,8 +1,23 @@
-## Cellular Automata Engine
+## = caruby - Cellular Automata Engine
+## == Author
 ## Chad Godsey
 ## Sept 3, 2008
+## == License
+## CARuby is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-## Usage documentation
+## CARuby is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
+##
+##
+## == Usage documentation
 ## Normally you will want to provide a .rb file describing an Automaton to build from
 ## Use the following format to do so
 ##
@@ -17,22 +32,27 @@
 ##
 ## This creates an automaton with two state, one grid, and two transitions
 ##
-## TODO:
-##	* output string of surrounding inputs for cells
+## == TODO:
 ##	* friendly .each accessor to cells in a grid { |x,y| stuff }
 ##	* Transition lookup stuff
 ##
-## Revision history
+## == Revision history
 ##   9-3: creation
 ##   9-10:  DSL rebuild
 ##   9-15:  Grids, Cells
 ##   9-16: Input from strings, started Transitions
 ##   9-17: Transitions, StateManager, rdoc, Cell functionality
-
+##   9-22: Transition lookup
+=begin
 require File.join(File.expand_path(File.dirname(__FILE__)), "", "Cell")
 require File.join(File.expand_path(File.dirname(__FILE__)), "", "State")
 require File.join(File.expand_path(File.dirname(__FILE__)), "", "Transition")
 require File.join(File.expand_path(File.dirname(__FILE__)), "", "Input")
+=end
+require 'Cell'
+require 'State'
+require 'Transition'
+require 'Input'
 
 module CellularAutomata
 	##
@@ -65,7 +85,7 @@ module CellularAutomata
 			@transitions = []
 		end
 		
-		## = DSL methods
+		## =DSL methods
 		
 		## Build a state
 		## name is the identifier, see State for options
@@ -80,7 +100,7 @@ module CellularAutomata
 		## * Width
 		## * Height
 		def grid(name, options = nil)
-			@grids[name] = Array.new(options[:width]) { |x| Array.new(options[:height]) { |y| y = Cell.new(options)}}
+			@grids[name] = Array.new(options[:width]) { |x| Array.new(options[:height]) { |y| y = Cell.new(name, options)}}
 		end
 		
 		## Define a Transition
@@ -92,46 +112,29 @@ module CellularAutomata
 		end
 		
 		##
-		## = Public Methods
+		## =Public Methods
 		##
 		
-		def NextState?(input = nil)
-			true if @transitions[@current][input]
+		## Tell if there exists a transition for given cell+input
+		## Note, better to use NextState and test for false
+		def NextState?(cell, input)
+			trans = @transitions.select { |t| t.match(cell,input) }
+			true if trans
 			false
 		end
 		
-		def NextState(input = nil)
-			n = @transitions[@current][input]
-			return n unless n.nil?
+		## Find next state for cell+input pair and return the last found
+		## returns false when no transition is found
+		def NextState(cell, input)
+			trans = @transitions.select { |t| t.match(cell,input) }
+			if trans.size > 1
+			#	raise "Multiple transitions matched!"
+			end
+			return trans[-1] unless trans.empty?
 			#will only occur with incomplete transition tables
 			return false
 		end
 		
-		def NextState!(input = nil)
-			t = @transitions[@state][input]
-			unless t.nil?
-				t.action.call
-				@state.exit
-				@state = t.next
-				@state.enter
-			end
-			#will only occur with incomplete transition tables
-			return false
-		end
 	end
 
-end
-
-
-#Test ourself if this is the current file and not an include
-if __FILE__ == $0
-	myca = CellularAutomata::Automaton.load('../dsl_0.rb')
-	puts myca.inspect
-	
-	1.upto(5) { myca.grids[:PLAYER1][0][0].addSurround "P1" }
-	1.upto(7) { myca.grids[:PLAYER1][0][0].addSurround "P2" }
-	myca.grids[:PLAYER1][0][0].surround
-	puts "\n " + myca.grids[:PLAYER1][0][0].inspect
-	myca.grids[:PLAYER1][0][0].set(myca.states[0])
-	puts "\n " + myca.grids[:PLAYER1][0][0].state.hexColor.to_s(16)
 end

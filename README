@@ -1,0 +1,25 @@
+Cellular Automata library module for Ruby
+
+See COPYING for licensing information.
+
+This module is intended to aid the creation of cellular automata.  To create a new c.a., it is easiest to create a definition file.  These files are organised as follows;
+
+
+Automaton.create :Prototype do
+	# States
+	state :INIT, :color => [0,0,0]
+	state :STATE1, :color => [255,0,0]
+
+	## Grids
+	grid :FIELD1, :width => 32, :height => 32
+	grid :FIELD2, :width => 32, :height => 32
+
+	## Transitions
+	transition "FIELD1:INIT", "INIT+3 -> STATE1" 
+end
+
+Then, you create your automata with
+myca = CellularAutomata::Automaton.load('file.rb')
+
+Now you have access to myca.grids[], states[], and transitions[]
+please read the rDoc for detailed information on use
