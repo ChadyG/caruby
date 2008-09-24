@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (CellularAutomata::Transition)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/Transition.rb, line 22</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">from</span>, <span class="ruby-identifier">string</span>)
+                        <span class="ruby-identifier">tokens</span> = <span class="ruby-identifier">string</span>.<span class="ruby-identifier">split</span>
+                        <span class="ruby-identifier">map</span> = <span class="ruby-identifier">tokens</span>.<span class="ruby-identifier">index</span>(<span class="ruby-value str">'-&gt;'</span>)
+                        <span class="ruby-identifier">ins</span> = <span class="ruby-identifier">tokens</span>.<span class="ruby-identifier">values_at</span>(<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">map</span>).<span class="ruby-identifier">delete_if</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'+'</span>}
+                        <span class="ruby-identifier">outs</span> = <span class="ruby-identifier">tokens</span>.<span class="ruby-identifier">values_at</span>((<span class="ruby-identifier">map</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>)<span class="ruby-operator">..</span><span class="ruby-value">-1</span>)
+                        <span class="ruby-ivar">@inputs</span> = <span class="ruby-identifier">ins</span>.<span class="ruby-identifier">collect</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-constant">Input</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">x</span>) }
+                        <span class="ruby-ivar">@output</span> = <span class="ruby-identifier">outs</span>.<span class="ruby-identifier">collect</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-constant">Input</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">x</span>) }
+                        <span class="ruby-ivar">@action</span>
+                        <span class="ruby-ivar">@nextState</span> = <span class="ruby-ivar">@output</span>.<span class="ruby-identifier">collect</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-constant">StateManager</span>.<span class="ruby-identifier">add</span>({<span class="ruby-identifier">:identifier</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">identifier</span>}) }
+                        <span class="ruby-ivar">@initialReactant</span> = <span class="ruby-constant">Input</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">from</span>)
+                        <span class="ruby-ivar">@fromState</span> = <span class="ruby-constant">StateManager</span>.<span class="ruby-identifier">add</span>( {<span class="ruby-identifier">:identifier</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@initialReactant</span>.<span class="ruby-identifier">identifier</span>} )
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
